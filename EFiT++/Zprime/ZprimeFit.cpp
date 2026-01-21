@@ -139,9 +139,13 @@ int main () {
     /// ------------------------------------------------------------------------------------------------------------
 
     /// ------------------------------------------------------------------------------------------------------------
-    /// Constructs the SMEFT expansion needed for the fit -- HERE WE CAN CHANGE THE EFT TRUNCATION
-    vector<string> fit_coefs = {"Delta4F", "Cphi1", "CBW"};
-    // vector<string> fit_coefs = {"C2JB", "Delta4F", "Cphi1", "CBW", "C7psi4H2", "C2psi4D2", "C3psi4D2", "C3W2H4"};
+    /// DEFINES THE EFT TRUNCATION
+    /// fit_coefs = {"Delta4F", "Cphi1", "CBW", "C2JB"} AND EFTExpansionOrder::dim6 -> ONLY LINEAR D=6 TERMS
+    /// fit_coefs = {"Delta4F", "Cphi1", "CBW", "C2JB"} AND EFTExpansionOrder::dim8 -> ONLY LINEAR D=6 AND (D=6)^2 TERMS
+    /// fit_coefs = {"C2JB", "Delta4F", "Cphi1", "CBW", "C7psi4H2", "C2psi4D2", "C3psi4D2", "C3W2H4"} AND EFTExpansionOrder::dim8 -> ONLY LINEAR D=6, (D=6)^2, LINEAR D=8 TERMS
+    /// The order of the coefficients does not matter
+    /// The different sets of coefficients can be included
+    vector<string> fit_coefs = {"Delta4F", "Cphi1", "CBW", "C2JB"};
     usmeft.build_EFTExpansion(fit_coefs, EFTExpansionOrder::dim6);
     /// ------------------------------------------------------------------------------------------------------------
     
@@ -162,7 +166,7 @@ int main () {
     /// Min of the chi-square
     cout << format("Chi-square min value = {:.4f}", minchi) << endl;
 
-    /// Computes the confidence interval for the first coefficient in the fit_coefs vector
+    /// Computes the confidence interval for the FIRST coefficient in the fit_coefs vector
     vector<double> xvalues = initialize_vector(-0.01, 0.01, 0.0001);
     /// 1 sigma CL
     const vector<double> conf_interval = fit.findConfidenceInterval(xvalues);
