@@ -144,7 +144,7 @@ int main () {
     /// fit_coefs = {"Delta4F", "Cphi1", "CBW", "C2JB"} AND EFTExpansionOrder::dim8 -> LINEAR D=6 AND (D=6)^2 TERMS
     /// fit_coefs = {"C2JB", "Delta4F", "Cphi1", "CBW", "C7psi4H2", "C2psi4D2", "C3psi4D2", "C3W2H4"} AND EFTExpansionOrder::dim8 -> LINEAR D=6, (D=6)^2, LINEAR D=8 TERMS
     /// The order of the coefficients does not matter
-    /// The different sets of coefficients can be included
+    /// The different sets of coefficients can be chosen
     vector<string> fit_coefs = {"Delta4F", "Cphi1", "CBW", "C2JB"};
     usmeft.build_EFTExpansion(fit_coefs, EFTExpansionOrder::dim6);
     /// ------------------------------------------------------------------------------------------------------------
