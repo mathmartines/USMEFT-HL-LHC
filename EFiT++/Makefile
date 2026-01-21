@@ -1,8 +1,9 @@
 CURRENT_DIR = $(shell pwd)
+NLOPT_DIR = /Users/martines/Desktop/Physics/nlopt-install
 CXX = g++
-CPPFLAGS = -I/Users/martines/Desktop/Physics/nlopt-install/include -I$(CURRENT_DIR)/include -I$(CURRENT_DIR)/external
+CPPFLAGS = -I$(NLOPT_DIR)/include -I$(CURRENT_DIR)/include -I$(CURRENT_DIR)/external
 CXXFLAGS = -stdlib=libc++ -pthread -std=c++20
-LDFLAGS = -L/Users/martines/Desktop/Physics/nlopt-install/lib -Wl,-rpath,/Users/martines/Desktop/Physics/nlopt-install/lib
+LDFLAGS = -L$(NLOPT_DIR)/lib -Wl,-rpath,$(NLOPT_DIR)/lib
 LIBS = -lnlopt -lm
 IDIR = include/EFiT++
 ODIR = lib
