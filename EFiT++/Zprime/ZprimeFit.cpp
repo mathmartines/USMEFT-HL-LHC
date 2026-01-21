@@ -140,7 +140,7 @@ int main () {
 
     /// ------------------------------------------------------------------------------------------------------------
     /// Constructs the SMEFT expansion needed for the fit -- HERE WE CAN CHANGE THE EFT TRUNCATION
-    vector<string> fit_coefs = {"C2JB", "Delta4F", "Cphi1", "CBW"};
+    vector<string> fit_coefs = {"Delta4F", "Cphi1", "CBW"};
     // vector<string> fit_coefs = {"C2JB", "Delta4F", "Cphi1", "CBW", "C7psi4H2", "C2psi4D2", "C3psi4D2", "C3W2H4"};
     usmeft.build_EFTExpansion(fit_coefs, EFTExpansionOrder::dim6);
     /// ------------------------------------------------------------------------------------------------------------
@@ -148,7 +148,7 @@ int main () {
     /// ------------------------------------------------------------------------------------------------------------
     /// UPDATES THE DATA FOR THE EWPO USING THE MATCHING RELATIONS
     valarray<double> pseudo_data_ew = ewpo_data.get_data("SM") + zprime_matching.get_prediction({beta, MXX}, eft_ewpo);
-    /// Replace the true EWPO data by the pseudo data based on the Zprime model
+    // Replace the true EWPO data by the pseudo data based on the Zprime model
     ewpo_data.set_data("data", pseudo_data_ew);
     /// ------------------------------------------------------------------------------------------------------------
 
