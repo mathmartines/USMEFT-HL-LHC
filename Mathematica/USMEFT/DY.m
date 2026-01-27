@@ -149,7 +149,7 @@ SetSysCC[] := (Observables["CCDY-" <> ToString[#]]["\[Sigma]Sys"] = 0.001 * 0.05
 SetSysCC[];
 
 
-(* ::Chapter::RGBColor[1, 0, 0]::Closed:: *)
+(* ::Chapter::RGBColor[1, 0, 0]:: *)
 (*LHC \[Chi]2*)
 
 
@@ -161,7 +161,8 @@ Options[\[Chi]2LHC] = {
 	WilsonCoefficients -> All,
 	EFTScale -> GetEFTScale[],
 	EFTOrder -> GetEFTOrder[],
-	OperatorDimension -> GetOperatorDimension[]
+	OperatorDimension -> GetOperatorDimension[],
+	MatchingRelations -> None
 }
 
 
@@ -193,7 +194,9 @@ LHCBins = <|"NCDY" -> NCDYbins, "CCDY" -> CCDYbins|>;
 	 NPCont = Association @ (# -> NPExpansion[
 	   (* Rescale the coefs if needed *)
 	   Observables[#]["NP"] /. WC[name_] :> If[MemberQ[$dimSixCoefs, name], \[CapitalLambda]^{-2}, \[CapitalLambda]^{-4}] WC[name], 
-	   EFTOrder -> OptionValue[EFTOrder]
+	   EFTOrder -> OptionValue[EFTOrder],
+	   OperatorDimension -> OptionValue[OperatorDimension],
+	   MatchingRelations -> OptionValue[MatchingRelations]
 	 ] & /@ observablesList);
 	 
 	(* Experimental data - Theory prediction  - THE DATA IS IN fb and not in number of events *)

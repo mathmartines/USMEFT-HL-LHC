@@ -3,7 +3,7 @@
 Package["USMEFT`"]
 
 
-(* ::Section::GrayLevel[0]::Closed:: *)
+(* ::Section::GrayLevel[0]:: *)
 (*Export*)
 
 
@@ -17,6 +17,7 @@ PackageExport["SetEFTOrder"]
 PackageExport["GetEFTOrder"]
 PackageExport["SetOperatorDimension"]
 PackageExport["GetOperatorDimension"]
+PackageExport["MatchingRelations"]
 
 
 Observables::usage = "Experimental and theory info about observables considered in the analysis"
@@ -31,11 +32,11 @@ Correlations[i_, j_] := 0
 SetAttributes[Correlations, Orderless]
 
 
-(* ::Section::GrayLevel[0]::Closed:: *)
+(* ::Section::GrayLevel[0]:: *)
 (*Private*)
 
 
-PackageScope["NPExpansion"]
+PackageExport["NPExpansion"]
 PackageScope["\[CapitalDelta]g1"]
 PackageScope["\[CapitalDelta]g2"]
 PackageScope["\[CapitalDelta]gW"]
@@ -126,9 +127,9 @@ WC::usage = "WC[\"label\"] Wilson coefficient associated with the operators give
 
 
 (* List of all WCs *)
-$dimSixCoefs = List["\[CapitalDelta]4F", "\[Phi],1", "BW", "2JB"];
+$dimSixCoefs = List["\[CapitalDelta]4F", "\[Phi],1", "BW", "2JB", "WW", "BB"];
 GetD6Coefs[] := $dimSixCoefs;
-$dimEightCoefs = List["3W2H4", "2\[Psi]4D2", "3\[Psi]4D2", "7\[Psi]4H2"];
+$dimEightCoefs = List["3W2H4", "2\[Psi]4D2", "3\[Psi]4D2", "7\[Psi]4H2", "5\[Psi]4H2", "4\[Psi]4H2", "1WBH4", "1\[Psi]2H4D", "2\[Psi]2H4D", "4\[Psi]2H4D", "2H6"];
 GetD8Coefs[] := $dimEightCoefs;
 
 
@@ -147,6 +148,27 @@ Format[WC[label:"3\[Psi]4D2"]] := DisplayForm@Subsuperscript["c", "\!\(\*Supersc
 Format[WC[label:"7\[Psi]4H2"]] := DisplayForm@Subsuperscript["c", "\!\(\*SuperscriptBox[\(\[Psi]\), \(4\)]\)\!\(\*SuperscriptBox[\(H\), \(2\)]\)", "(7)"]
 
 
+Format[WC[label:"5\[Psi]4H2"]] := DisplayForm@Subsuperscript["c", "\!\(\*SuperscriptBox[\(\[Psi]\), \(4\)]\)\!\(\*SuperscriptBox[\(H\), \(2\)]\)", "(5)"]
+
+
+Format[WC[label:"4\[Psi]4H2"]] := DisplayForm@Subsuperscript["c", "\!\(\*SuperscriptBox[\(\[Psi]\), \(4\)]\)\!\(\*SuperscriptBox[\(H\), \(2\)]\)", "(4)"]
+
+
+Format[WC[label:"1WBH4"]] := DisplayForm@Subsuperscript["c", "\!\(\*W\)\!\(\*B\)\!\(\*SuperscriptBox[\(H\), \(4\)]\)", "(1)"]
+
+
+Format[WC[label:"1\[Psi]2H4D"]] := DisplayForm@Subsuperscript["c", "\!\(\*SuperscriptBox[\(\[Psi]\), \(2\)]\)\!\(\*SuperscriptBox[\(H\), \(4\)]\)\!\(\*D\)", "(1)"]
+
+
+Format[WC[label:"2\[Psi]2H4D"]] := DisplayForm@Subsuperscript["c", "\!\(\*SuperscriptBox[\(\[Psi]\), \(2\)]\)\!\(\*SuperscriptBox[\(H\), \(4\)]\)\!\(\*D\)", "(2)"]
+
+
+Format[WC[label:"4\[Psi]2H4D"]] := DisplayForm@Subsuperscript["c", "\!\(\*SuperscriptBox[\(\[Psi]\), \(2\)]\)\!\(\*SuperscriptBox[\(H\), \(4\)]\)\!\(\*D\)", "(4)"]
+
+
+Format[WC[label:"2H6"]] := DisplayForm@Subsuperscript["c", "\!\(\*SuperscriptBox[\(H\), \(6\)]\)", "(2)"]
+
+
 (* Check WC *)
 WC::unknownWClabel= "The label `1` is not an allowed label for Wilson coefficients (WC)."
 
@@ -157,7 +179,7 @@ WC[l:Except[Alternatives@@Join[$dimSixCoefs, $dimEightCoefs, {_Pattern, _Blank, 
 )
 
 
-(* ::Section::GrayLevel[0]::Closed:: *)
+(* ::Section::GrayLevel[0]:: *)
 (*SM parameters*)
 
 
@@ -175,22 +197,32 @@ SMParam["c4\[Theta]"] = SMParam["c2\[Theta]"]^2 - SMParam["s2\[Theta]"]^2
 SMParam["MW"] = SMParam["ee"] SMParam["vev"]/ (2 SMParam["s\[Theta]"]) (* in GeV *)
 
 
-(* ::Section::GrayLevel[0]::Closed:: *)
+(* ::Section::GrayLevel[0]:: *)
 (*Extracts the NPs contribution*)
 
 
 Options[NPExpansion] := {
-	EFTOrder          -> GetEFTOrder[]
+	MatchingRelations -> None, 
+	EFTOrder          -> GetEFTOrder[],
+	OperatorDimension -> GetOperatorDimension[]
 }
 
 
-NPExpansion[theory_, OptionsPattern[]] := Module[{opts, NPCont, \[Xi], series},
-  (* Shifts in terms of the WCs *)
-  opts = # -> OptionValue[#]&/@{EFTOrder};
+NPExpansion[theory_, OptionsPattern[]] := Module[{NPCont, \[Xi], series, matching, \[CapitalLambda]},
+  (* Selects only operators of a given dimension *)
+  NPCont = theory /. WC[name:Alternatives@@$dimEightCoefs] :> If[OptionValue[OperatorDimension] === 6, 0, WC[name]];
+  
+  (* Matching of th e *)
+  matching = OptionValue[MatchingRelations];
   
   (* Computes the observables *)
-  NPCont = theory /. WC[name_] :> If[MemberQ[$dimSixCoefs, name], \[Xi]^2, \[Xi]^4] WC[name];
-  
+  If[matching =!= None, 
+     \[CapitalLambda] = (Association@matching)[["\[CapitalLambda]"]];
+     NPCont = NPCont /. matching /. \[CapitalLambda] -> \[CapitalLambda]/\[Xi] ;
+     ,
+	 NPCont = NPCont /. WC[name_] :> If[MemberQ[$dimSixCoefs, name], \[Xi]^2, \[Xi]^4] WC[name];
+  ];
+
   (* Removes the SM prediction *)
   NPCont = Series[NPCont, {\[Xi], 0, OptionValue[EFTOrder]}];
   NPCont = Normal[NPCont] - (Normal[NPCont] /. \[Xi] -> 0); 

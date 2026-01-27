@@ -561,11 +561,17 @@ LoadZprimeBenchmarkEW[matchingRelations_, benchmarkValues_, OptionsPattern[]] :=
 	];
 	
 	(* NPs contribution *)
-	NPFunc = # -> NPExpansion[Observables[#]["NP"]/.subs, EFTOrder -> OptionValue[EFTOrder]]/.matchingRelations/.benchmarkValues &;
+	NPFunc = # -> NPExpansion[
+			Observables[#]["NP"]/.subs, 
+			EFTOrder -> OptionValue[EFTOrder], 
+			OperatorDimension -> OptionValue[OperatorDimension],
+			MatchingRelations -> matchingRelations
+		]/.benchmarkValues &;
+		
 	NPs = Association @ ( NPFunc /@ EWobs );
-	 
+	
 	(* Updates the observables with the SM + NP *)
-	UpdateObservables[] = (Observables[#]["Data"] = Around[Observables[#]["SM"] + NPs[#] , Observables[#]["\[Sigma]Data"]]) & /@ EWobs;
+	UpdateObservables[] = (Observables[#]["Data"] = Around[Observables[#]["SM"]["Value"] + NPs[#] , Observables[#]["\[Sigma]Data"]]) & /@ EWobs;
 	UpdateObservables[]
 ]
 
@@ -586,7 +592,8 @@ Options[\[Chi]2EWPO] = {
 	WilsonCoefficients -> All,
 	EFTScale -> GetEFTScale[],
 	EFTOrder -> GetEFTOrder[],
-	OperatorDimension -> GetOperatorDimension[]
+	OperatorDimension -> GetOperatorDimension[],
+	MatchingRelations -> None
 }
 
 
@@ -629,7 +636,8 @@ WCs = Flatten@Table[WC[name], {name, Join[$dimSixCoefs, $dimEightCoefs]}];
 	(* NPs contribution *)
 	 NPCont = Association @ (# -> NPExpansion[
 	   Observables[#]["NP"] /. subs, 
-	   EFTOrder -> OptionValue[EFTOrder]
+	   EFTOrder -> OptionValue[EFTOrder],
+	   MatchingRelations -> OptionValue[MatchingRelations]
 	 ] & /@ observablesList);
 	 
 	(* ExpData - Theory *)
