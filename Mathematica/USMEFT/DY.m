@@ -68,7 +68,7 @@ LoadData[SimulationFile_, DataFile_, ObsNames_] := Module[
 DataFolderPath = FileNameJoin[{DirectoryName[$InputFileName, 3], "Data"}];
 
 
-(* ::Chapter::RGBColor[1, 0, 0]::Closed:: *)
+(* ::Chapter::RGBColor[1, 0, 0]:: *)
 (*NC DY *)
 
 
@@ -93,7 +93,7 @@ SetSysNC[] := (Observables["NCDY-" <> ToString[#]]["\[Sigma]Sys"] = 0.001 * 0.05
 SetSysNC[];
 
 
-(* ::Section::GrayLevel[0]::Closed:: *)
+(* ::Section::GrayLevel[0]:: *)
 (*Load Zprime benchmark*)
 
 
@@ -178,7 +178,7 @@ LHCBins = <|"NCDY" -> NCDYbins, "CCDY" -> CCDYbins|>;
 	},
 	(* List with all the observables that must be included in the construction of the \[Chi]2 *)
 	observablesList = If[
-		OptionValue[ObservablesList] === All, Join[NCDYbins, CCDYbins], Flatten[LHCBins /@ OptionValue[ObservablesList]]
+		OptionValue[ObservablesList] === All, Join[NCDYbins[[;;10]], CCDYbins], Flatten[LHCBins /@ OptionValue[ObservablesList]]
 	];
 	
 	(* List with the WCs that must be included in the \[Chi]2 *)
