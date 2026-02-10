@@ -92,21 +92,25 @@ int main (int argc, char* argv[]) {
     zprime_matching.set_matching( "C2JB" , &C2JB  );
     zprime_matching.set_matching( "C2psi4D2", &C2psi4D2);
     /// ------------------------------------------------------------------------------------------------------------
+    
+    /// ------------------------------------------------------------------------------------------------------------
+    /// Path to the folder where data and theory predictions are stored
+    const string datafolder = "/data/01/martines/PhD_Projects/USMEFT-HL-LHC/Data";
+    /// ------------------------------------------------------------------------------------------------------------
 
     /// ------------------------------------------------------------------------------------------------------------
     /// NC DY Information
 
-    /// Experimental data and theory predictions
-    const string hl_ncdy_path = "/data/01/martines/hep_programs/HepData/USMEFT-HLLHC/NCDY";
-    
     /// Theory
-    EFTStorage eft_ncdy_pred (hl_ncdy_path + "/USMEFT-NCDY-HLLHC.json");
+    EFTStorage eft_ncdy_pred (datafolder + "/NCDY/USMEFT-NCDY-HLLHC.json");
     eft_ncdy_pred.set_bins_number(13);
+    eft_ncdy_pred.slice_bins(0, 10);
 
     /// Experimental data
     string pseudo_data_ncdy = make_pseudo_name(beta, mxx);
-    ExperimentalData ncdy_data (hl_ncdy_path + "/pseudo_data_Zprime/" + pseudo_data_ncdy);
+    ExperimentalData ncdy_data (datafolder + "/NCDY/pseudo_data_Zprime/" + pseudo_data_ncdy);
     ncdy_data.set_bins_number(13);
+    ncdy_data.slice_bins(0, 10);
 
     /// Defines the chi-square for the fit
     ObservableChiSquare chisq_ncdy (ncdy_data, eft_ncdy_pred, &usmeft);
@@ -115,19 +119,16 @@ int main (int argc, char* argv[]) {
 
     /// ------------------------------------------------------------------------------------------------------------
     /// CC DY Information
-
-    /// Experimental data and theory predictions
-    string hl_ccdy_path = "/data/01/martines/hep_programs/HepData/USMEFT-HLLHC/CCDY";
     
     /// Theory
-    EFTStorage eft_ccdy_pred (hl_ccdy_path + "/USMEFT-CCDY-HLLHC.json");
+    EFTStorage eft_ccdy_pred (datafolder + "/CCDY/USMEFT-CCDY-HLLHC.json");
     eft_ccdy_pred.set_bins_number(8);
 
     /// Experimental data
-    ExperimentalData ccdy_data (hl_ccdy_path + "/CCDY_pseudo_data_Zprime.json");
+    ExperimentalData ccdy_data (datafolder + "/CCDY/CCDY_pseudo_data_Zprime.json");
     ccdy_data.set_bins_number(8);
 
-    // Defines the chi-square for the fit
+    /// Defines the chi-square for the fit
     ObservableChiSquare chisq_ccdy (ccdy_data, eft_ccdy_pred, &usmeft);
     chisq_ccdy.setChiSquareFunc(&GaussianChiSquareHLLHC);
     /// ------------------------------------------------------------------------------------------------------------
@@ -135,17 +136,14 @@ int main (int argc, char* argv[]) {
     /// ------------------------------------------------------------------------------------------------------------
     /// EWPO Information
 
-    /// Experimental data and theory predictions
-    string ewpo_path = "/data/01/martines/hep_programs/HepData/USMEFT-HLLHC/EWPO";
-    
     /// Theory
-    EFTStorage eft_ewpo (ewpo_path + "/EWPOTheory.json");
+    EFTStorage eft_ewpo (datafolder + "/EWPO/EWPOTheory.json");
     eft_ewpo.set_bins_number(16);
 
     /// Experimental data
-    ExperimentalData ewpo_data (ewpo_path + "/EWPOData.json");
+    ExperimentalData ewpo_data (datafolder + "/EWPO/EWPOData.json");
     ewpo_data.set_bins_number(16);
-    ewpo_data.read_inverse_cov_matrix (ewpo_path + "/EWPOInvCovMatrix.json");
+    ewpo_data.read_inverse_cov_matrix (datafolder + "/EWPO/EWPOInvCovMatrix.json");
 
     /// Defines the chi-square for the fit
     ObservableChiSquare chisq_ewpo (ewpo_data, eft_ewpo, &usmeft);
@@ -180,7 +178,7 @@ int main (int argc, char* argv[]) {
 
     /// ------------------------------------------------------------------------------------------------------------
     /// Constructs the SMEFT expansion
-    const vector<string> allowed_coefs = {"C2JB", "CBW", "Cphi1",  "Delta4F", "C3W2H4", "C2psi4D2", "C3psi4D2", "C7psi4H2"};
+    const vector<string> allowed_coefs = {"C2JB", "CBW", "Cphi1",  "Delta4F"};
     const vector<string> fit_coefs = createWCsList(wilsonCoef, allowed_coefs);
     usmeft.build_EFTExpansion(fit_coefs, EFTExpansionOrder::dim8);
     /// ------------------------------------------------------------------------------------------------------------
@@ -207,10 +205,23 @@ int main (int argc, char* argv[]) {
 
     cout << "Best-fit value " << initial_guest[0] << endl;
 
-    /// Computes the confidence interval
-    vector<double> xvalues = initialize_vector(-20, 20, 0.01);
-    const vector<double> conf_interval = fit.findConfidenceInterval(xvalues);
 
+    /// Vectors ranges for different coefficients
+    const map<const string, const vector<double>> xvalues {
+        {"C2JB", initialize_vector(-0.1, 0.1, 0.001)},
+        {"C2psi4D2", initialize_vector(-0.01, 0.01, 0.0001)},
+        {"Cphi1", initialize_vector(-0.1, 0.1, 0.001)},
+        {"CBW", initialize_vector(-0.1, 0.1, 0.001)},
+        {"Delta4F", initialize_vector(-0.01, 0.01, 0.0001)},
+    };
+
+    /// Computes the confidence interval
+    const vector<double> conf_interval = fit.findConfidenceInterval(xvalues.at(wilsonCoef), true);
+
+    /// C2JB : range [-0.1, 0.1]
+    /// Delta4F: range [-0.01, 0.01]
+    /// Cphi1 : range [-0.1, 0.1]
+    /// CBW : range [-0.1, 0.1]
     benchmark_fit.emplace("upper-limit", conf_interval[1]);
     benchmark_fit.emplace("lower-limit", conf_interval[0]);
     /// ------------------------------------------------------------------------------------------------------------

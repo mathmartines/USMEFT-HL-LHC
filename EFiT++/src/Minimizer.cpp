@@ -64,8 +64,8 @@ const double NLoptMinimizer::profile(ChiSquare* chi_square, const std::vector<do
     optimizer.set_min_objective(nlopt_signature_prof_function, chi_square);
 
     // Setting tolerances
-    optimizer.set_xtol_rel(1e-8);
-    optimizer.set_ftol_rel(1e-8);
+    optimizer.set_xtol_rel(1e-9);
+    optimizer.set_ftol_rel(1e-9);
 
     double min;
     try {

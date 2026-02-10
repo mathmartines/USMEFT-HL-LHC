@@ -34,6 +34,9 @@ class DataStorage {
         /// @brief - Total number of bins 
         const int get_bins_number() const {return _number_of_bins;};
 
+        /// @brief - keeps only nbins bins, starting from initial_index
+        void slice_bins(const int initial_index, const int nbins);
+
         /// @brief - Sets the total number of bins
         void set_bins_number(int nbins) {_number_of_bins = nbins;};
 
