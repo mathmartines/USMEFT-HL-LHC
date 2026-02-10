@@ -34,6 +34,14 @@ void DataStorage::set_data(const std::string datakey, const std::valarray<double
     _data[datakey] = data;
 }
 
+void DataStorage::slice_bins(const int initial_bin, const int size) {
+    /// Iterates over all the items in the map
+    for (auto& [keyname, vector_data]: _data) 
+        vector_data = std::valarray<double>(vector_data[std::slice(initial_bin, size, 1)]);
+    /// Updates the number of bin of the distribution
+    _number_of_bins = size;
+}
+
 const std::valarray<double>& EFTStorage::get_EFTterm(const std::vector<std::string> wilson_coefs) const {
     /// Stores all the candidate keys
     std::stringstream attempts;

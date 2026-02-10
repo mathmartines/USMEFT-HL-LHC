@@ -1,9 +1,11 @@
 CURRENT_DIR = $(shell pwd)
-NLOPT_DIR = /Users/martines/Desktop/Physics/nlopt-install
+NLOPT_DIR = /data/01/martines/Tools/nlopt-install
 CXX = g++
 CPPFLAGS = -I$(NLOPT_DIR)/include -I$(CURRENT_DIR)/include -I$(CURRENT_DIR)/external
-CXXFLAGS = -stdlib=libc++ -pthread -std=c++20
-LDFLAGS = -L$(NLOPT_DIR)/lib -Wl,-rpath,$(NLOPT_DIR)/lib
+# CXXFLAGS = -stdlib=libc++ -pthread -std=c++20
+CXXFLAGS = -pthread -std=c++20 -m64
+# LDFLAGS = -L$(NLOPT_DIR)/lib -Wl,-rpath,$(NLOPT_DIR)/lib
+LDFLAGS = -L$(NLOPT_DIR)/lib64 -Wl,-rpath,$(NLOPT_DIR)/lib64
 LIBS = -lnlopt -lm
 IDIR = include/EFiT++
 ODIR = lib
@@ -26,10 +28,24 @@ ZprimeFit: ZprimeFit.o $(OBJ)
 ZprimeFit.o: $(CURRENT_DIR)/Zprime/ZprimeFit.cpp $(DEPS) $(CURRENT_DIR)/Zprime/ZprimeMatching.h
 	$(CXX) -c -o $@ $< $(CPPFLAGS) $(CXXFLAGS)
 
+ZprimeFitServer: ZprimeFitServer.o $(OBJ)
+	$(CXX) -o $@ $^ $(LDFLAGS) $(LIBS)
+
+ZprimeFitServer.o: $(CURRENT_DIR)/Zprime/ZprimeFitServer.cpp $(DEPS) $(CURRENT_DIR)/Zprime/ZprimeMatching.h
+	$(CXX) -c -o $@ $< $(CPPFLAGS) $(CXXFLAGS)
+
+WprimeFitServer: WprimeFitServer.o $(OBJ)
+	$(CXX) -o $@ $^ $(LDFLAGS) $(LIBS)
+
+WprimeFitServer.o: $(CURRENT_DIR)/Wprime/WprimeFitServer.cpp $(DEPS) $(CURRENT_DIR)/Wprime/WprimeMatching.h
+	$(CXX) -c -o $@ $< $(CPPFLAGS) $(CXXFLAGS)
+
 clean:
 	rm -rf $(ODIR)/*.o 
 	rm -rf *.o 
 	rm -rf ZprimeFit
+	rm -rf ZprimeFitServer
+	rm -rf WprimeFitServer
 
 # Phony targets
 .PHONY: clean
