@@ -103,15 +103,15 @@ int main (int argc, char* argv[]) {
 
     /// Theory
     EFTStorage eft_ncdy_pred (datafolder + "/NCDY/USMEFT-NCDY.json");
-    eft_ncdy_pred.set_bins_number(17);
-    eft_ncdy_pred.slice_bins(0, 16);
+    eft_ncdy_pred.set_bins_number(25);
+    eft_ncdy_pred.slice_bins(0, 24);
 
     /// Experimental data
     // string pseudo_data_ncdy = make_pseudo_name(beta, mxx);
     // ExperimentalData ncdy_data (datafolder + "/NCDY/pseudo_data_Zprime/" + pseudo_data_ncdy);
     ExperimentalData ncdy_data (datafolder + "/NCDY/pseudo_data_SM.json");
-    ncdy_data.set_bins_number(17);
-    ncdy_data.slice_bins(0, 16);
+    ncdy_data.set_bins_number(25);
+    ncdy_data.slice_bins(0, 24);
 
 
     for(const auto& val: ncdy_data.get_data("bin-edges"))
@@ -127,13 +127,13 @@ int main (int argc, char* argv[]) {
     
     /// Theory
     EFTStorage eft_ccdy_pred (datafolder + "/CCDY/USMEFT-CCDY.json");
-    eft_ccdy_pred.set_bins_number(17);
-    eft_ccdy_pred.slice_bins(0, 16);
+    eft_ccdy_pred.set_bins_number(25);
+    eft_ccdy_pred.slice_bins(0, 24);
 
     /// Experimental data
     ExperimentalData ccdy_data (datafolder + "/CCDY/pseudo_data_SM.json");
-    ccdy_data.set_bins_number(17);
-    ccdy_data.slice_bins(0, 16);
+    ccdy_data.set_bins_number(25);
+    ccdy_data.slice_bins(0, 24);
 
     /// Defines the chi-square for the fit
     ObservableChiSquare chisq_ccdy (ccdy_data, eft_ccdy_pred, &usmeft);
