@@ -37,7 +37,10 @@ void DataStorage::set_data(const std::string datakey, const std::valarray<double
 void DataStorage::slice_bins(const int initial_bin, const int size) {
     /// Iterates over all the items in the map
     for (auto& [keyname, vector_data]: _data) 
-        vector_data = std::valarray<double>(vector_data[std::slice(initial_bin, size, 1)]);
+        if (keyname != "bin-edges")
+            vector_data = std::valarray<double>(vector_data[std::slice(initial_bin, size, 1)]);
+        else    
+            vector_data = std::valarray<double>(vector_data[std::slice(initial_bin, size + 1, 1)]);
     /// Updates the number of bin of the distribution
     _number_of_bins = size;
 }

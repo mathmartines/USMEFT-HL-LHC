@@ -49,9 +49,9 @@ const std::vector<double> Fit::findConfidenceInterval(const std::vector<double>&
     /// Finds the minimum value
     const int min_index = std::min_element(chisq.begin(), chisq.end()) - chisq.begin();
     /// Finds lower and upper index 
-    /// 2sigma = 3.84146
-    const int upper_index = findIndexForValue(min_index, chisq.size() - 1, chisq[min_index] + 1., false, chisq);
-    const int lower_index = findIndexForValue(0, min_index, chisq[min_index] + 1., true, chisq);
+    /// 2sigma = 3.84146, 1sigma= 1
+    const int upper_index = findIndexForValue(min_index, chisq.size() - 1, chisq[min_index] + 3.84146, false, chisq);
+    const int lower_index = findIndexForValue(0, min_index, chisq[min_index] + 3.84146, true, chisq);
     /// print values
     std::cout << "[" << coef_values[lower_index] << ", " << coef_values[upper_index] << "]" << std::endl;
     return std::vector<double> ({coef_values[lower_index], coef_values[upper_index]});

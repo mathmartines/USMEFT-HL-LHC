@@ -14,7 +14,8 @@ const double GaussianChiSquareHLLHC(const std::valarray<double>& prediction, con
     /// Central values of the bins (in TeV)
     std::valarray<double> central_values (0., bin_edges.size() - 1);
     for (int i = 0; i < bin_edges.size() - 1; i++)
-        central_values[i] = i != bin_edges.size() - 2 ? 0.001 * (bin_edges[i] + bin_edges[i + 1])/2. : 0.001 * bin_edges[i];
+        central_values[i] =  0.001 * (bin_edges[i] + bin_edges[i + 1])/2.;
+        // central_values[i] = i != bin_edges.size() - 2 ? 0.001 * (bin_edges[i] + bin_edges[i + 1])/2. : 0.001 * bin_edges[i];
 
     /// Systematic uncertainties
     const std::valarray<double> sys_error_sq = std::pow(0.05 * central_values * model_pred, 2);

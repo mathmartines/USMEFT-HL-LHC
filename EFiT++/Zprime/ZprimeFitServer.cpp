@@ -102,15 +102,20 @@ int main (int argc, char* argv[]) {
     /// NC DY Information
 
     /// Theory
-    EFTStorage eft_ncdy_pred (datafolder + "/NCDY/USMEFT-NCDY-HLLHC.json");
-    eft_ncdy_pred.set_bins_number(13);
-    eft_ncdy_pred.slice_bins(0, 10);
+    EFTStorage eft_ncdy_pred (datafolder + "/NCDY/USMEFT-NCDY.json");
+    eft_ncdy_pred.set_bins_number(17);
+    eft_ncdy_pred.slice_bins(0, 16);
 
     /// Experimental data
-    string pseudo_data_ncdy = make_pseudo_name(beta, mxx);
-    ExperimentalData ncdy_data (datafolder + "/NCDY/pseudo_data_Zprime/" + pseudo_data_ncdy);
-    ncdy_data.set_bins_number(13);
-    ncdy_data.slice_bins(0, 10);
+    // string pseudo_data_ncdy = make_pseudo_name(beta, mxx);
+    // ExperimentalData ncdy_data (datafolder + "/NCDY/pseudo_data_Zprime/" + pseudo_data_ncdy);
+    ExperimentalData ncdy_data (datafolder + "/NCDY/pseudo_data_SM.json");
+    ncdy_data.set_bins_number(17);
+    ncdy_data.slice_bins(0, 16);
+
+
+    for(const auto& val: ncdy_data.get_data("bin-edges"))
+        cout << val << endl;
 
     /// Defines the chi-square for the fit
     ObservableChiSquare chisq_ncdy (ncdy_data, eft_ncdy_pred, &usmeft);
@@ -121,12 +126,14 @@ int main (int argc, char* argv[]) {
     /// CC DY Information
     
     /// Theory
-    EFTStorage eft_ccdy_pred (datafolder + "/CCDY/USMEFT-CCDY-HLLHC.json");
-    eft_ccdy_pred.set_bins_number(8);
+    EFTStorage eft_ccdy_pred (datafolder + "/CCDY/USMEFT-CCDY.json");
+    eft_ccdy_pred.set_bins_number(17);
+    eft_ccdy_pred.slice_bins(0, 16);
 
     /// Experimental data
-    ExperimentalData ccdy_data (datafolder + "/CCDY/CCDY_pseudo_data_Zprime.json");
-    ccdy_data.set_bins_number(8);
+    ExperimentalData ccdy_data (datafolder + "/CCDY/pseudo_data_SM.json");
+    ccdy_data.set_bins_number(17);
+    ccdy_data.slice_bins(0, 16);
 
     /// Defines the chi-square for the fit
     ObservableChiSquare chisq_ccdy (ccdy_data, eft_ccdy_pred, &usmeft);
@@ -178,30 +185,30 @@ int main (int argc, char* argv[]) {
 
     /// ------------------------------------------------------------------------------------------------------------
     /// Constructs the SMEFT expansion
-    const vector<string> allowed_coefs = {"C2JB", "CBW", "Cphi1",  "Delta4F"};
+    const vector<string> allowed_coefs = {"C2JB", "CBW", "Cphi1",  "Delta4F", "C3W2H4", "C2psi4D2", "C3psi4D2", "C7psi4H2"};
     const vector<string> fit_coefs = createWCsList(wilsonCoef, allowed_coefs);
     usmeft.build_EFTExpansion(fit_coefs, EFTExpansionOrder::dim8);
     /// ------------------------------------------------------------------------------------------------------------
     
     /// ------------------------------------------------------------------------------------------------------------
     /// SM + NP prediction for the EWPO
-    valarray<double> pseudo_data_ew = ewpo_data.get_data("SM") + zprime_matching.get_prediction({beta, mxx}, eft_ewpo);
+    // valarray<double> pseudo_data_ew = ewpo_data.get_data("SM") + zprime_matching.get_prediction({beta, mxx}, eft_ewpo);
     /// Replace the true EWPO data by the pseudo data based on the Zprime model
-    ewpo_data.set_data("data", pseudo_data_ew);
+    // ewpo_data.set_data("data", pseudo_data_ew);
     /// ------------------------------------------------------------------------------------------------------------
 
     /// ------------------------------------------------------------------------------------------------------------
     /// RUNS THE FIT 
 
     /// Map to store the information of the fit
-    map<string, double> benchmark_fit;
-    benchmark_fit.emplace("beta", beta);
-    benchmark_fit.emplace("MXX",  mxx);
+    // map<string, double> benchmark_fit;
+    // benchmark_fit.emplace("beta", beta);
+    // benchmark_fit.emplace("MXX",  mxx);
         
     /// Best-fit value  
     vector<double> initial_guest (fit_coefs.size(), 0.);
     double minchi = fit.minimizeChiSquare(initial_guest);
-    benchmark_fit.emplace("best-fit", initial_guest[0]);
+    // benchmark_fit.emplace("best-fit", initial_guest[0]);
 
     cout << "Best-fit value " << initial_guest[0] << endl;
 
@@ -222,13 +229,13 @@ int main (int argc, char* argv[]) {
     /// Delta4F: range [-0.01, 0.01]
     /// Cphi1 : range [-0.1, 0.1]
     /// CBW : range [-0.1, 0.1]
-    benchmark_fit.emplace("upper-limit", conf_interval[1]);
-    benchmark_fit.emplace("lower-limit", conf_interval[0]);
+    // benchmark_fit.emplace("upper-limit", conf_interval[1]);
+    // benchmark_fit.emplace("lower-limit", conf_interval[0]);
     /// ------------------------------------------------------------------------------------------------------------
 
     /// ------------------------------------------------------------------------------------------------------------
     /// Saves the results of the fit in the output file
-    save_to_json (wilsonCoef + "-" + pseudo_data_ncdy, benchmark_fit);
+    // save_to_json (wilsonCoef + "-" + pseudo_data_ncdy, benchmark_fit);
     /// ------------------------------------------------------------------------------------------------------------
 
     return 0;
