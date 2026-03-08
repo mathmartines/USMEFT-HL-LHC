@@ -107,15 +107,12 @@ int main (int argc, char* argv[]) {
     eft_ncdy_pred.slice_bins(0, 24);
 
     /// Experimental data
-    // string pseudo_data_ncdy = make_pseudo_name(beta, mxx);
-    // ExperimentalData ncdy_data (datafolder + "/NCDY/pseudo_data_Zprime/" + pseudo_data_ncdy);
-    ExperimentalData ncdy_data (datafolder + "/NCDY/pseudo_data_SM.json");
+    string pseudo_data_ncdy = make_pseudo_name(beta, mxx);
+    ExperimentalData ncdy_data (datafolder + "/NCDY/pseudo_data_Zprime/" + pseudo_data_ncdy);
+    // ExperimentalData ncdy_data (datafolder + "/NCDY/pseudo_data_SM.json");
     ncdy_data.set_bins_number(25);
     ncdy_data.slice_bins(0, 24);
 
-
-    for(const auto& val: ncdy_data.get_data("bin-edges"))
-        cout << val << endl;
 
     /// Defines the chi-square for the fit
     ObservableChiSquare chisq_ncdy (ncdy_data, eft_ncdy_pred, &usmeft);
@@ -192,9 +189,9 @@ int main (int argc, char* argv[]) {
     
     /// ------------------------------------------------------------------------------------------------------------
     /// SM + NP prediction for the EWPO
-    // valarray<double> pseudo_data_ew = ewpo_data.get_data("SM") + zprime_matching.get_prediction({beta, mxx}, eft_ewpo);
+    valarray<double> pseudo_data_ew = ewpo_data.get_data("SM") + zprime_matching.get_prediction({beta, mxx}, eft_ewpo);
     /// Replace the true EWPO data by the pseudo data based on the Zprime model
-    // ewpo_data.set_data("data", pseudo_data_ew);
+    ewpo_data.set_data("data", pseudo_data_ew);
     /// ------------------------------------------------------------------------------------------------------------
 
     /// ------------------------------------------------------------------------------------------------------------
@@ -223,7 +220,7 @@ int main (int argc, char* argv[]) {
     };
 
     /// Computes the confidence interval
-    const vector<double> conf_interval = fit.findConfidenceInterval(xvalues.at(wilsonCoef), true);
+    // const vector<double> conf_interval = fit.findConfidenceInterval(xvalues.at(wilsonCoef), true);
 
     /// C2JB : range [-0.1, 0.1]
     /// Delta4F: range [-0.01, 0.01]
