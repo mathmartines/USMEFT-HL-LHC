@@ -29,7 +29,7 @@ double NLoptMinimizer::nlopt_signature_prof_function(const std::vector<double>& 
 
 const double NLoptMinimizer::minimize(ChiSquare* chi_square, std::vector<double>& initial_guest) const {
     // creating the optmizer
-    nlopt::opt optimizer (nlopt::LN_NELDERMEAD, initial_guest.size());
+    nlopt::opt optimizer (nlopt::LN_SBPLX, initial_guest.size());
 
     // seting the function we wish to minimize
     optimizer.set_min_objective(nlopt_signature_function, chi_square);
@@ -55,7 +55,7 @@ const double NLoptMinimizer::minimize(ChiSquare* chi_square, std::vector<double>
 
 const double NLoptMinimizer::profile(ChiSquare* chi_square, const std::vector<double>& fixed_values, std::vector<double>& initial_guess) const {
     // Creating the optimizer
-    nlopt::opt optimizer(nlopt::LN_NELDERMEAD, initial_guess.size());
+    nlopt::opt optimizer(nlopt::LN_SBPLX, initial_guess.size());
 
     // Saves the values of the coefficients we need to maintain fixed
     chi_square->stored_coef_values = fixed_values;
@@ -64,8 +64,8 @@ const double NLoptMinimizer::profile(ChiSquare* chi_square, const std::vector<do
     optimizer.set_min_objective(nlopt_signature_prof_function, chi_square);
 
     // Setting tolerances
-    optimizer.set_xtol_rel(1e-9);
-    optimizer.set_ftol_rel(1e-9);
+    // optimizer.set_xtol_rel(1e-5);
+    optimizer.set_ftol_rel(1e-5);
 
     double min;
     try {

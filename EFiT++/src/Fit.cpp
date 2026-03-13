@@ -20,7 +20,7 @@ const std::vector<double> Fit::computeOneDimProjection(const std::vector<double>
     std::vector<double> remaining_coefs(_bestfit_values.size() - 1, 0);
 
     // Compute Chi-Square for each value in the given coefficient vector
-    int max_number_of_laps = 2;
+    int max_number_of_laps = 3;
 
     /// Loops over the values four times
     for (int nlaps = 0; nlaps < max_number_of_laps; nlaps++) {
@@ -50,8 +50,8 @@ const std::vector<double> Fit::findConfidenceInterval(const std::vector<double>&
     const int min_index = std::min_element(chisq.begin(), chisq.end()) - chisq.begin();
     /// Finds lower and upper index 
     /// 2sigma = 3.84146, 1sigma= 1
-    const int upper_index = findIndexForValue(min_index, chisq.size() - 1, chisq[min_index] + 3.84146, false, chisq);
-    const int lower_index = findIndexForValue(0, min_index, chisq[min_index] + 3.84146, true, chisq);
+    const int upper_index = findIndexForValue(min_index, chisq.size() - 1, chisq[min_index] + 1, false, chisq);
+    const int lower_index = findIndexForValue(0, min_index, chisq[min_index] + 1, true, chisq);
     /// print values
     std::cout << "[" << coef_values[lower_index] << ", " << coef_values[upper_index] << "]" << std::endl;
     return std::vector<double> ({coef_values[lower_index], coef_values[upper_index]});
