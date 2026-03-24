@@ -38,8 +38,8 @@ const vector<string> createWCsList (const string coef, const vector<string>& lis
 inline std::string make_pseudo_name(double beta, double mxx) {
     std::ostringstream oss;
     oss << "Wprime-beta_"
-        << std::fixed << std::setprecision(0) << beta * 10
-        << "E-01-MXX_"
+        << std::fixed << std::setprecision(0) << beta * 100
+        << "E-02-MXX_"
         << std::fixed << std::setprecision(0) << mxx
         << "-TeV.json";
     return oss.str();
@@ -86,10 +86,10 @@ int main (int argc, char* argv[]) {
     EFTExpansion usmeft (usmeft_coefs);
 
     /// Matching between the model param and the WCs
-    EFTMatching zprime_matching (usmeft, {"beta", "MXX"});
-    zprime_matching.set_matching( "Cphi1", &Cphi1 );
-    zprime_matching.set_matching( "CBW"  , &CBW   );
-    zprime_matching.set_matching( "Delta4F" , &Delta4F  );
+    EFTMatching wprime_matching (usmeft, {"beta", "MXX"});
+    wprime_matching.set_matching( "Cphi1", &Cphi1 );
+    wprime_matching.set_matching( "CBW"  , &CBW   );
+    wprime_matching.set_matching( "Delta4F" , &Delta4F  );
     /// ------------------------------------------------------------------------------------------------------------
     
     /// ------------------------------------------------------------------------------------------------------------
@@ -98,18 +98,20 @@ int main (int argc, char* argv[]) {
     /// ------------------------------------------------------------------------------------------------------------
 
     /// ------------------------------------------------------------------------------------------------------------
+    /// Prefix of the pseudo data files
+    string prefix_pseudo_data = make_pseudo_name(beta, mxx);
+    /// ------------------------------------------------------------------------------------------------------------
+
+    /// ------------------------------------------------------------------------------------------------------------
     /// NC DY Information
 
     /// Theory
-    EFTStorage eft_ncdy_pred (datafolder + "/NCDY/USMEFT-NCDY-HLLHC-parton-level.json");
-    eft_ncdy_pred.set_bins_number(13);
-    eft_ncdy_pred.slice_bins(0, 10);
+    EFTStorage eft_ncdy_pred (datafolder + "/NCDY/USMEFT-NCDY.json");
+    eft_ncdy_pred.set_bins_number(15);
 
     /// Experimental data
-    string pseudo_data = make_pseudo_name(beta, mxx);
-    ExperimentalData ncdy_data (datafolder + "/NCDY/pseudo_data_Wprime/NCDY-" + pseudo_data);
-    ncdy_data.set_bins_number(13);
-    ncdy_data.slice_bins(0, 10);
+    ExperimentalData ncdy_data (datafolder + "/NCDY/pseudo_data_Wprime/NCDY-" + prefix_pseudo_data);
+    ncdy_data.set_bins_number(15);
 
     /// Defines the chi-square for the fit
     ObservableChiSquare chisq_ncdy (ncdy_data, eft_ncdy_pred, &usmeft);
@@ -119,15 +121,14 @@ int main (int argc, char* argv[]) {
     /// ------------------------------------------------------------------------------------------------------------
     /// CC DY Information
     
-    /// Theory
-    EFTStorage eft_ccdy_pred (datafolder + "/CCDY/USMEFT-CCDY-HLLHC.json");
-    eft_ccdy_pred.set_bins_number(13);
-    eft_ccdy_pred.slice_bins(0, 8);
+     /// Theory
+    EFTStorage eft_ccdy_pred (datafolder + "/CCDY/USMEFT-CCDY.json");
+    eft_ccdy_pred.set_bins_number(9);
 
     /// Experimental data
-    ExperimentalData ccdy_data(datafolder + "/CCDY/pseudo_data_Wprime/CCDY-" + pseudo_data);
-    ccdy_data.set_bins_number(13);
-    ccdy_data.slice_bins(0, 8);
+    ExperimentalData ccdy_data (datafolder + "/CCDY/pseudo_data_Wprime/CCDY-" + prefix_pseudo_data);
+    ccdy_data.set_bins_number(9);
+
 
     /// Defines the chi-square for the fit
     ObservableChiSquare chisq_ccdy (ccdy_data, eft_ccdy_pred, &usmeft);
@@ -179,14 +180,17 @@ int main (int argc, char* argv[]) {
 
     /// ------------------------------------------------------------------------------------------------------------
     /// Constructs the SMEFT expansion
-    const vector<string> allowed_coefs = {"C2JB", "CBW", "Cphi1",  "Delta4F", "C2psi4D2", "C3psi4D2", "C7psi4H2", "C3W2H4"};
+    const vector<string> allowed_coefs = {
+        "C2JB", "CBW", "Cphi1",  "Delta4F", 
+        // "C2psi4D2", "C3psi42", "C7psi4H2", "C3W2H4"
+    };
     const vector<string> fit_coefs = createWCsList(wilsonCoef, allowed_coefs);
     usmeft.build_EFTExpansion(fit_coefs, EFTExpansionOrder::dim8);
     /// ------------------------------------------------------------------------------------------------------------
     
     /// ------------------------------------------------------------------------------------------------------------
     /// SM + NP prediction for the EWPO
-    valarray<double> pseudo_data_ew = ewpo_data.get_data("SM") + zprime_matching.get_prediction({beta, mxx}, eft_ewpo);
+    valarray<double> pseudo_data_ew = ewpo_data.get_data("SM") + wprime_matching.get_prediction({beta, mxx}, eft_ewpo);
     /// Replace the true EWPO data by the pseudo data based on the Zprime model
     ewpo_data.set_data("data", pseudo_data_ew);
     /// ------------------------------------------------------------------------------------------------------------
@@ -202,36 +206,55 @@ int main (int argc, char* argv[]) {
     /// Best-fit value  
     vector<double> initial_guest (fit_coefs.size(), 0.);
     double minchi = fit.minimizeChiSquare(initial_guest);
-    benchmark_fit.emplace("best-fit", initial_guest[0]);
+    
 
     cout << "Best-fit value " << initial_guest[0] << endl;
 
 
     /// Vectors ranges for different coefficients
     const map<const string, const vector<double>> xvalues {
-        {"C2JB", initialize_vector(-1, 1, 0.01)},
-        // {"C2JB", initialize_vector(-1.0, 1.0, 0.001)},  // d8
+        {"C2JB", initialize_vector(-0.01, 0.01, 0.0001)},
         {"Cphi1", initialize_vector(-0.1, 0.1, 0.001)},
-        // {"Cphi1", initialize_vector(-0.5, 0.5, 0.001)}, // d8
-        {"CBW", initialize_vector(-0.1, 0.1, 0.001)},   // d8
-        // {"Delta4F", initialize_vector(-0.01, 0.01, 0.00001)}, 
-        {"Delta4F", initialize_vector(-0.1, 0.1, 0.0001)}, // d8
+        {"CBW", initialize_vector(-0.1, 0.1, 0.001)},
+        {"Delta4F", initialize_vector(-0.001, 0.001, 0.00001)}
     };
 
     /// Computes the confidence interval
-    const vector<double> conf_interval = fit.findConfidenceInterval(xvalues.at(wilsonCoef), true);
+    const vector<double> conf_interval = fit.findConfidenceInterval(xvalues.at(wilsonCoef), false);
 
     /// C2JB : range [-0.1, 0.1]
     /// Delta4F: range [-0.01, 0.01]
     /// Cphi1 : range [-0.1, 0.1]
     /// CBW : range [-0.1, 0.1]
+    benchmark_fit.emplace("best-fit", initial_guest[0]);
     benchmark_fit.emplace("upper-limit", conf_interval[1]);
     benchmark_fit.emplace("lower-limit", conf_interval[0]);
+
+    /// Stores the chi-square evaluated at the SM
+    vector<double> zeros (fit_coefs.size(), 0.);
+    double chi_sq_SM = chisq_ncdy.evaluate(zeros);
+    benchmark_fit.emplace("ChiSq-SM-NCDY", chi_sq_SM);
+
+    /// Chi-Square last bin
+    ncdy_data.slice_bins(14, 1);
+    eft_ncdy_pred.slice_bins(14, 1);
+    double chi_sq_SM_last_bin = chisq_ncdy.evaluate(zeros);
+    benchmark_fit.emplace("ChiSq-SM-NCDY-last-bin", chi_sq_SM_last_bin);
+
+    /// Stores the chi-square evaluated at the SM
+    chi_sq_SM = chisq_ccdy.evaluate(zeros);
+    benchmark_fit.emplace("ChiSq-SM-CCDY", chi_sq_SM);
+
+    /// Chi-Square last bin
+    ccdy_data.slice_bins(8, 1);
+    eft_ccdy_pred.slice_bins(8, 1);
+    chi_sq_SM_last_bin = chisq_ccdy.evaluate(zeros);
+    benchmark_fit.emplace("ChiSq-SM-CCDY-last-bin", chi_sq_SM_last_bin);
     /// ------------------------------------------------------------------------------------------------------------
 
     /// ------------------------------------------------------------------------------------------------------------
     /// Saves the results of the fit in the output file
-    save_to_json (wilsonCoef + "-" + pseudo_data, benchmark_fit);
+    save_to_json (wilsonCoef + "-" + prefix_pseudo_data, benchmark_fit);
     /// ------------------------------------------------------------------------------------------------------------
 
     return 0;

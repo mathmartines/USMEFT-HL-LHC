@@ -12,6 +12,7 @@
 /// @brief - Gaussian chi-square for NC and CC DY data
 ///          prediction vector contains only the EFT contributions, except the SM one
 const double GaussianChiSquareHLLHC(const std::valarray<double>& prediction, const ExperimentalData& experimental_data);
+const double GaussianChiSquareHLLHCW(const std::valarray<double>& prediction, const ExperimentalData& experimental_data);
 /// ------------------------------------------------------------------------------------------------------------------------
 /// ------------------------------------------------------------------------------------------------------------------------
 //// @brief - EWPO chi-square
