@@ -1,0 +1,310 @@
+\documentclass[11pt]{article}
+
+\usepackage{cite}
+\usepackage{hyperref}
+%\usepackage{ulem} 
+
+\usepackage{lineno}
+%\linenumbers
+\usepackage{graphicx}  % Include this in the preamble
+
+\usepackage{amsmath}
+\usepackage{amssymb,amsfonts,amsthm}
+\linespread{1.2}
+%\usepackage[pdftex]{graphicx} %graficos
+
+\usepackage{epsfig,graphicx}
+\usepackage{url} %url
+\usepackage{bm} %letras griegas en negrita (uso: \bm{\alpha})
+\usepackage{bbm}
+%\usepackage[pdftex,breaklinks=true]{hyperref} %links
+%\usepackage{hyperref}
+%\hypersetup{colorlinks=false}
+\usepackage{slashed}
+\usepackage{cite}
+\usepackage{adjustbox}
+
+\usepackage{color}
+\usepackage{pstricks}
+\usepackage{setspace}
+\usepackage[most]{tcolorbox}
+
+\usepackage{fancyhdr}
+\usepackage{textcomp}
+\usepackage{multirow}%multirows in tables
+\usepackage{pifont}%checkmarks
+\newcommand{\cmark}{\ding{51}}%
+\newcommand{\xmark}{\ding{55}}
+\usepackage{geometry}
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newcommand{\unit}{\leavevmode\hbox{\small1\kern-3.6pt\normalsize1}}
+\def \ie{{\it i.e.}}
+\def \eg{{\it e.g.}}
+\def \etal{{\it et al.}}
+\def \GeV{{\mathrm{GeV}}}
+\def \TeV{{\mathrm{TeV}}}
+\renewcommand{\topfraction}{1}
+\renewcommand{\bottomfraction}{1}
+\renewcommand{\textfraction}{0}
+\renewcommand{\baselinestretch}{1.2}
+\parskip=1.0ex
+\setcounter{topnumber}{10}
+\setcounter{bottomnumber}{10}
+\setcounter{totalnumber}{10}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                         Text Dimensions
+%%%
+% CB: You can change the dimensions here.
+\textwidth=15.5cm
+\textheight=22.5cm
+\oddsidemargin=0.2cm
+\evensidemargin=0.2cm
+\topmargin=-1cm
+
+% ---------------------------------------------------------------------
+
+\renewcommand{\theequation}{\thesection.\arabic{equation}}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
+
+% ---------------------------------------------------------------------
+% Definitions for the text
+% ---------------------------------------------------------------------
+
+% Some math conventions
+\def\li{{\rm Li_2 \,}}
+\def\CV {{\cal V}}
+\def\CM {{\cal M}}
+\def\CO {{\cal O}}
+\def\CM {{\cal M}}
+\def\re{{\rm Re \,}}
+\def\CL{{\cal L}}
+
+\def \GeV{{\mathrm{GeV}}}
+
+\allowdisplaybreaks
+
+\def\sigmavgg{\xi^2\langle\sigma v\rangle_{\gamma\gamma} }
+\def\sip{\sigma^{SI}_{\chi p}}
+\def\sineut{\sigma^{SI}_{\chi p}}
+\def\sdp{\sigma^{SD}_{\chi p}}
+\def\sdn{\sigma^{SD}_{\chi n}}
+
+\def\mdm{m_\chi}
+
+\newcommand{\op}[1]{{\cal Q}_{#1}}
+\newcommand{\opi}[2][1]{{\cal Q}_{#1}^{#2}}
+\newcommand{\cc}[1]{{\cal C}_{#1}}
+\newcommand{\cci}[2][1]{{\cal C}_{#1}^{#2}}
+\newcommand{\ccsmeft}[1]{\dfrac{{\cal C}_{#1}}{\Lambda^2}}
+\newcommand{\ccsmeftvev}[1]{\dfrac{v^2{\cal C}_{#1}}{\Lambda^2}}
+\newcommand{\ccsmeftvevt}[1]{\dfrac{v_T^2{\cal C}_{#1}}{\Lambda^2}}
+\newcommand{\ccsmeftvevhat}[1]{\dfrac{\hat v^2{\cal C}_{#1}}{\Lambda^2}}
+\newcommand{\DC}[1]{\overleftrightarrow{D}_{#1}}
+\newcommand{\DCi}[2][1]{\overleftrightarrow{D}_{#1}^{#2}}
+
+\newcommand{\Fn}[2][1]{F_{#1}^{(#2)}}
+\newcommand{\Kn}[2][1]{K_{#1}^{(#2)}}
+\newcommand{\ccf}{{\cal C}}
+\newcommand{\ccb}{\overline{{\cal C}}}
+
+% Command definitions
+\newcommand{\Lag}{\mathcal{L}}
+
+
+
+
+\begin{document}
+
+\title{Drell-Yan EFT}
+
+\thispagestyle{empty}
+\begin{flushright}
+
+
+ \vspace*{2.mm}{\color{red}{Modified: \today}}
+\end{flushright}
+
+\begin{center}
+  {\bf {\LARGE USMEFT at the HL-LHC}}
+\end{center}
+
+\renewcommand*{\thefootnote}{\fnsymbol{footnote}}
+\setcounter{footnote}{3}
+
+\section{Neutral vector mediator}
+
+\subsection{Model Lagrangian}
+
+Here we consider the following Lagrangian
+\begin{equation}
+    {\cal L} = {\cal L}_\text{SM} - \dfrac{1}{4} X^2_{\mu\nu} + \dfrac{1}{2} M^2 X^2_\mu - g_1 \beta {\cal H}_\mu X^\mu - g_1 \Psi_\mu X^\mu + g_1^2 Y_H^2 \beta^2 \big (H^\dagger H\big) X_\mu^2\,,
+    \label{eq:modelLag}
+\end{equation}
+where we have defined
+\begin{align}
+    {\cal H}_\mu &= iY_H \big(H^\dagger \overleftrightarrow{D}_\mu H\big)\,,\\[0.5em]
+    \Psi_\mu &= \sum_\psi Y_\psi \big( \overline{\psi} \gamma_\mu \psi\big)\,.
+\end{align}
+In the Appendix {\color{red} X}, we provide the matching relations at dimensions $d=6$ and $d=8$ in terms of the bosonic and rotated basis.
+
+\subsection{Current limits and benchmark points}
+
+The model written in Eq.~\eqref{eq:modelLag} generates only a contribution to the oblique parameter $Y$, while the overall corrections to the parameters $\widehat S$ and $\widehat T$ cancel out. Therefore, the main constraint comes from the NC DY channel rather than from EWPO. The current limits are presented in Fig.~\ref{fig:benchmark}, together with the benchmark points, shown as red dots, that we choose for our study. Note that we also considered values of the coupling $\beta$ and the mass $M$ that are currently excluded by the LHC data.
+
+%%%%%%%%%%%%%
+\begin{figure*}[!t]
+\begin{center}
+    \includegraphics[width=0.7\textwidth]{Benchmarks_Zprime.pdf}
+    \caption{\small \sl 95\% CL exclusion regions from EWPO (gray) and NC DY (purple). The points in red represent the benchmark points we consider for the model parameters to generate the pseudo-data.}
+    \label{fig:benchmark}
+\end{center}
+\end{figure*}
+%%%%%%%%%%%%%
+
+\subsection{Simulations}
+
+In this section, we gather information concerning the simulation details of the EFT terms and the model signal.
+
+\paragraph{Parton-level:} The simulations were performed at LO with a center-of-mass energy of $\sqrt{s}= 14\, \text{TeV}$. In order to ensure a significant number of generated events at different dilepton invariant mass ($m_{\ell\ell}$) values, we generated samples in disjoint phase-space regions defined by the the same variable, namely $m_{\ell\ell}$. The only generation-level cuts applied were
+\begin{align}
+    p_{T}^\ell &> 10 \, \text{GeV}, &  |\eta^\ell| < 2.5.
+\end{align}
+In order to avoid the need for a large number of simulations for the model signal, we employed the reweighting technique. We generated signal samples only for different values of the mediator mass $M$, while keeping the coupling $\beta$ fixed. From the samples generated for a given pair of model parameters $(M,\, \beta)$, reweighting can be used to adjust the event weights to correspond to different parameter values $(M,\, \beta^\prime)$. Reweighting increases the MC statistical uncertainties, which remain under control only if the technique is applied to parameter-space points that are close to the original values used in the event generation. This condition fails when reweighting is applied to mediator masses that are far away from those in the simulated samples.
+
+
+\paragraph{Parton-shower and Hadronization:} Performed with the default \texttt{Pythia8} settings.
+
+\paragraph{Detector-level:} Unfortunately, the available Delphes cards provide a very conservative estimate of the detection efficiencies for both the dielectron and dimuon channels. With the aim of obtaining more optimistic results, we therefore adopt the dielectron efficiency reported by the ATLAS Collaboration during Run 2~\cite{ATLAS:2019erb}, instead of the efficiencies provided by Delphes. In Fig.~\ref{fig:eff}, we compare the selection efficiencies obtained from the Delphes simulation with the one reported by ATLAS in Run 2. The following selection cuts were applied:
+\begin{enumerate}
+    \item [1)] $p_T^\ell > 20 \, \text{GeV}$ and $|\eta^\ell| < 2.5$;
+    \item [2)] Two opposite charge electrons in the final state. 
+\end{enumerate}
+
+%%%%%%%%%%%%%
+\begin{figure*}[!t]
+\begin{center}
+    \includegraphics[width=0.7\textwidth]{EfficiencyPlot.pdf}
+    \caption{\small \sl Event selection efficiency as a function of the dielectron invariant mass for different parameterizations of the detector effects. The efficiency is computed as the ratio of the cross-section after including detector efficiency effects and event selection cuts to the parton-level cross-section.}
+    \label{fig:eff}
+\end{center}
+\end{figure*}
+%%%%%%%%%%%%%
+
+\paragraph{What still needs to be done?}
+\begin{itemize}
+    \item SM prediction at NLO in QCD for NC DY;
+    \item Launch shower, hadronization, and detector simulation in the CC DY samples;
+    \item Better determination of the CC DY channel background (inclusion of the contribution of processes besides CC DY).
+\end{itemize}
+
+\subsection{Global fits}
+
+The fits were performed using  distributions for NC and CC DY, as well as including EWPO. For each benchmark point shown in Fig.~\ref{fig:benchmark}, we treated as data the SM prediction plus the contribution of the model, with parameter values corresponding to the benchmark point considered. This was done for the NC DY channel and EWPO. We verified that the contribution to the CC DY -- which occurs do to the renormalization of the input parameters -- is very small and it can be neglected. As an example, we show the NC DY distribution in Fig.~\ref{fig:dist}. 
+
+%%%%%%%%%%%%%
+\begin{figure*}[!t]
+\begin{center}
+    \includegraphics[width=0.7\textwidth]{example_dist_v2.pdf}
+    \caption{\small \sl Distribution for the NC DY channel. The SM prediction is shown in gray, while the model prediction is shown by the dashed red line. The model prediction contains also the SM contribution.}
+    \label{fig:dist}
+\end{center}
+\end{figure*}
+%%%%%%%%%%%%%
+
+The chi-square for the DY distributions was the following  
+\begin{equation}
+    \chi^2 = \sum_i \dfrac{(N^\text{pseudo-data}_i -N_i^\text{EFT})^2}{N^\text{pseudo-data}_i + \delta_{\text{syst},\, i}^2}\,,
+\end{equation}
+where
+\begin{align}
+    N^\text{pseudo-data}_i &= {\cal L} \,\sigma^\text{pseudo-data}_i\,,\\
+    N^\text{EFT}_i &= {\cal L} \,\sigma^\text{EFT}_i\,,\\
+    \delta_{\text{syst},\, i} &= 0.05 \times {m}\, [\text{TeV}] \times N^\text{pseudo-data}_i\,,
+\end{align}
+where ${\cal L}$ denotes the luminosity, which we take to be $3000~\text{fb}^{-1}$, and $\sigma^\text{pseudo-data}_i$ and $\sigma^\text{EFT}_i$ denotes the denotes the cross-section, after the inclusion of detector effects and event selection cuts, for the pseudo-data and EFT terms, respectively. The systematical uncertainty $\delta_{\text{syst}}$ increases with the invariant (transverse) mass of the NC (CC) DY channel. For all the distributions we considered, and for the value of the luminosity we are assuming, all the bins contain more than 10 events, which justifies the use of the Gaussian approximation. The analysis contain four dimension-6 operators and four dimension-8 ones:
+\begin{equation}
+    \chi^2 \Big(\overline{c}_{2JB},\, \overline\Delta_{4F},\, \overline c_{BW},\,\overline c_{\phi, 1},\, \overline  c_{W^2 H^4}^{(3)},\ c_{\psi^4 H^2}^{(7)} ,\ c_{\psi^4 D^2}^{(2)},\ c_{\psi^4 D^2}^{(3)}\Big)\, .
+\end{equation}
+
+We assess whether the global fit is able to capture the effects of the model in the following way. First, we verify whether the SM can provide an explanation for the observed data by computing $\chi^2_\text{SM} - \chi^2_\text{min}$, where $\chi^2_\text{SM}$, $\chi^2_\text{min}$ denote the value of the chi-square evaluated at the SM point and the minimum chi-square value obtained from the fit, respectively. The results, obtained using different truncations of the EFT series for the observables, are presented in Fig.~\ref{fig:globalchisq}. We observe that, for smaller masses and/or larger values of the coupling, the SM description of the observed data becomes worse, regardless of the EFT expansion employed in the analysis.
+
+%%%%%%%%%%%%%
+\begin{figure*}[!t]
+\begin{center}
+    \includegraphics[width=1.\textwidth]{GlobalChiSquare_Features.pdf}
+    \caption{\small \sl $\chi^2_\text{SM} - \chi^2_\text{min}$ extracted for different values of the model parameters $(M, \, \beta)$, considering different EFT truncations for the observables in the analysis.}
+    \label{fig:globalchisq}
+\end{center}
+\end{figure*}
+%%%%%%%%%%%%%
+
+
+Another important aspect of the global analysis is to identify which Wilson coefficients are most sensitive to NP effects (NP reach), how well the fitted values agree with the model predictions (accuracy), and how precise the constraints are (significance). To address these questions, we define the following measures for each Wilson coefficient:
+
+\begin{itemize}
+    \item \underline{Accuracy}:
+    \begin{equation}
+        f_{\text{Acc}, \, i} = \dfrac{|c_i^\text{best-fit} -  c_i^\text{true}|}{\Delta c_i}\,,
+    \end{equation}
+    where $\Delta c_i = (c_i^{\text{UL},\, 68\%} - c_i^{\text{LL},\, 68\%})/2$, with $c_i^{\text{UL},\, 68\%}$ and $c_i^{\text{LL},\, 68\%}$ denoting the $68\%$ CL upper and lower limits, respectively. 
+    \item \underline{NP reach}: 
+    \begin{equation}
+        f_{\text{NP}, \, i} = \dfrac{|c_i^\text{best-fit} -  c_i^\text{SM}|}{\Delta c_i}\,,
+    \end{equation}
+    where $c_i^\text{SM} = 0$.  
+    \item \underline{Significance}: 
+    \begin{equation}
+         f_{\text{Sig}, \, i} = \dfrac{|c_i^\text{true}|}{\Delta c_i}\,.
+    \end{equation}
+\end{itemize}
+
+We show the values of these quantities for each benchmark point considered, including only the linear dimension-6 contributions (Fig.~\ref{fig:lineard6}), including the squared dimension-6 terms (Fig.~\ref{fig:d6squared}), and including linear dimension-8 contributions (Figs.~\ref{fig:d8} and~\ref{fig:d8ops}). Note that, for analyses including only dimension-6 operators, the Wilson coefficient with the largest potential to signal NP is $c_{2JB}$ at smaller masses and larger values of the couplings $\beta$. On the other hand, when dimension-8 operators are included, our DY + EWPO analysis does not provide sufficient precision in the determination of the coefficients (see the third column of Fig.~\ref{fig:d8}) to identify which of them could accomodate the tension between the data and the SM prediction.
+\newpage
+
+%%%%%%%%%%%%%
+\begin{figure*}[hbtp]
+\begin{center}
+    \includegraphics[width=1.\textwidth]{FitStats_d6.pdf}
+    \caption{\small \sl Values of $f_\text{Acc}$, $f_\text{NP}$, and $f_\text{Sig}$ for each dimension-6 Wilson coefficient present in the analysis, including only linear dimension-6 effects.}
+    \label{fig:lineard6}
+\end{center}
+\end{figure*}
+%%%%%%%%%%%%%
+
+%%%%%%%%%%%%%
+\begin{figure*}[hbtp]
+\begin{center}
+    \includegraphics[width=1.0\textwidth]{FitStats_d6sq.pdf}
+    \caption{\small \sl Values of $f_\text{Acc}$, $f_\text{NP}$, and $f_\text{Sig}$ for each dimension-6 Wilson coefficient present in the analysis, including only linear dimension-6 as well as dimension-6 squared effects.}
+    \label{fig:d6squared}
+\end{center}
+\end{figure*}
+%%%%%%%%%%%%%
+
+%%%%%%%%%%%%%
+\begin{figure*}[hbtp]
+\begin{center}
+    \includegraphics[width=1.0\textwidth]{FitStats_d8.pdf}
+    \caption{\small \sl Values of $f_\text{Acc}$, $f_\text{NP}$, and $f_\text{Sig}$ for each dimension-6 Wilson coefficient present in the analysis, including  effects up to dimension-8.}
+    \label{fig:d8}
+\end{center}
+\end{figure*}
+%%%%%%%%%%%%%
+
+%%%%%%%%%%%%%
+\begin{figure*}[hbtp]
+\begin{center}
+    \includegraphics[width=1.\textwidth]{FitStats_d8_d8ops.pdf}
+    \caption{\small \sl Values of $f_\text{Acc}$, $f_\text{NP}$, and $f_\text{Sig}$ for each dimension-8 Wilson coefficient present in the analysis.}
+    \label{fig:d8ops}
+\end{center}
+\end{figure*}
+%%%%%%%%%%%%%
+\bibliographystyle{JHEP}
+\bibliography{library}
+
+\end{document}
