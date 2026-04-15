@@ -103,13 +103,12 @@ int main (int argc, char* argv[]) {
 
     /// Theory
     EFTStorage eft_ncdy_pred (datafolder + "/NCDY/USMEFT-NCDY.json");
-    eft_ncdy_pred.set_bins_number(15);
+    eft_ncdy_pred.set_bins_number(13);
 
     /// Experimental data
     string pseudo_data_ncdy = make_pseudo_name(beta, mxx);
     ExperimentalData ncdy_data (datafolder + "/NCDY/pseudo_data_Zprime/" + pseudo_data_ncdy);
-    // ExperimentalData ncdy_data (datafolder + "/NCDY/pseudo_data_SM.json");
-    ncdy_data.set_bins_number(15);
+    ncdy_data.set_bins_number(13);
 
     /// Defines the chi-square for the fit
     ObservableChiSquare chisq_ncdy (ncdy_data, eft_ncdy_pred, &usmeft);
@@ -121,11 +120,11 @@ int main (int argc, char* argv[]) {
     
     /// Theory
     EFTStorage eft_ccdy_pred (datafolder + "/CCDY/USMEFT-CCDY.json");
-    eft_ccdy_pred.set_bins_number(15);
+    eft_ccdy_pred.set_bins_number(9);
 
     /// Experimental data
     ExperimentalData ccdy_data (datafolder + "/CCDY/pseudo_data_SM.json");
-    ccdy_data.set_bins_number(15);
+    ccdy_data.set_bins_number(9);
 
     /// Defines the chi-square for the fit
     ObservableChiSquare chisq_ccdy (ccdy_data, eft_ccdy_pred, &usmeft);
@@ -178,7 +177,8 @@ int main (int argc, char* argv[]) {
     /// ------------------------------------------------------------------------------------------------------------
     /// Constructs the SMEFT expansion
     const vector<string> allowed_coefs = {
-        "C2JB", "Delta4F", "CBW", "Cphi1", "C2psi4D2", "C3psi4D2", "C7psi4H2", "C3W2H4"
+        "C2JB", "Delta4F", "CBW", "Cphi1", 
+        // "C2psi4D2", "C3psi4D2", "C7psi4H2", "C3W2H4"
     };
     const vector<string> fit_coefs = createWCsList(wilsonCoef, allowed_coefs);
     usmeft.build_EFTExpansion(fit_coefs, EFTExpansionOrder::dim8);
@@ -202,11 +202,11 @@ int main (int argc, char* argv[]) {
     /// Best-fit value  
     vector<double> initial_guest (fit_coefs.size(), 0.);
     double minchi = fit.minimizeChiSquare(initial_guest);
-    
+    benchmark_fit.emplace("MinChiSquare", minchi);
     
     /// Vectors ranges for different coefficients
     const map<const string, const vector<double>> xvalues {
-        {"C2JB", initialize_vector(-1, 1, 0.001)},
+        {"C2JB", initialize_vector(-0.1, 0.1, 0.001)},
         {"Cphi1", initialize_vector(-0.1, 0.1, 0.001)},
         {"CBW", initialize_vector(-0.1, 0.1, 0.001)},
         {"Delta4F", initialize_vector(-0.001, 0.001, 0.00001)},
@@ -231,8 +231,8 @@ int main (int argc, char* argv[]) {
     benchmark_fit.emplace("ChiSq-SM", chi_sq_SM);
 
     /// Chi-Square last bin
-    ncdy_data.slice_bins(14, 1);
-    eft_ncdy_pred.slice_bins(14, 1);
+    ncdy_data.slice_bins(12, 1);
+    eft_ncdy_pred.slice_bins(12, 1);
     const double chi_sq_SM_last_bin = chisq_ncdy.evaluate(zeros);
     benchmark_fit.emplace("ChiSq-SM-last-bin", chi_sq_SM_last_bin);
     /// ------------------------------------------------------------------------------------------------------------
