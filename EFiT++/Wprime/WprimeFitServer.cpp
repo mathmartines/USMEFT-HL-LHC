@@ -107,11 +107,11 @@ int main (int argc, char* argv[]) {
 
     /// Theory
     EFTStorage eft_ncdy_pred (datafolder + "/NCDY/USMEFT-NCDY.json");
-    eft_ncdy_pred.set_bins_number(15);
+    eft_ncdy_pred.set_bins_number(13);
 
     /// Experimental data
     ExperimentalData ncdy_data (datafolder + "/NCDY/pseudo_data_Wprime/NCDY-" + prefix_pseudo_data);
-    ncdy_data.set_bins_number(15);
+    ncdy_data.set_bins_number(13);
 
     /// Defines the chi-square for the fit
     ObservableChiSquare chisq_ncdy (ncdy_data, eft_ncdy_pred, &usmeft);
@@ -160,7 +160,6 @@ int main (int argc, char* argv[]) {
     usmeft.add_EFTStorage(&eft_ewpo);
     /// ------------------------------------------------------------------------------------------------------------
 
-    
     /// ------------------------------------------------------------------------------------------------------------
     /// Global chi-square and Fit object
     CombinedChiSquare global_chisq (
@@ -182,7 +181,7 @@ int main (int argc, char* argv[]) {
     /// Constructs the SMEFT expansion
     const vector<string> allowed_coefs = {
         "C2JB", "CBW", "Cphi1",  "Delta4F", 
-        // "C2psi4D2", "C3psi42", "C7psi4H2", "C3W2H4"
+        "C2psi4D2", "C3psi42", "C7psi4H2", "C3W2H4"
     };
     const vector<string> fit_coefs = createWCsList(wilsonCoef, allowed_coefs);
     usmeft.build_EFTExpansion(fit_coefs, EFTExpansionOrder::dim8);
@@ -197,65 +196,44 @@ int main (int argc, char* argv[]) {
 
     /// ------------------------------------------------------------------------------------------------------------
     /// RUNS THE FIT 
-    // vector<double> initial_guest (fit_coefs.size(), 0.);
-    // cout << global_chisq.evaluate(initial_guest) << endl;   
+
     /// Map to store the information of the fit
-    // map<string, double> benchmark_fit;
-    // benchmark_fit.emplace("beta", beta);
-    // benchmark_fit.emplace("MXX",  mxx);
+    map<string, double> benchmark_fit;
+    benchmark_fit.emplace("beta", beta);
+    benchmark_fit.emplace("MXX",  mxx);
         
     // /// Best-fit value  
-    vector<double> initial_guest2 (fit_coefs.size(), 0.);
-    double minchi = fit.minimizeChiSquare(initial_guest2);
-    cout << minchi << endl;
+    vector<double> initial_guest (fit_coefs.size(), 0.);
+    double minchi = fit.minimizeChiSquare(initial_guest);
+    benchmark_fit.emplace("MinChiSquare", minchi);
+    
+    /// Vectors ranges for different coefficients
+    const map<const string, const vector<double>> xvalues {
+        {"C2JB", initialize_vector(-0.01, 0.01, 0.0001)},
+        {"Cphi1", initialize_vector(-0.1, 0.1, 0.001)},
+        {"CBW", initialize_vector(-0.1, 0.1, 0.001)},
+        {"Delta4F", initialize_vector(-0.001, 0.001, 0.000005)}
+    };
 
-    // cout << "Best-fit value " << initial_guest[0] << endl;
-
-
-    // /// Vectors ranges for different coefficients
-    // const map<const string, const vector<double>> xvalues {
-    //     {"C2JB", initialize_vector(-0.01, 0.01, 0.0001)},
-    //     {"Cphi1", initialize_vector(-0.1, 0.1, 0.001)},
-    //     {"CBW", initialize_vector(-0.1, 0.1, 0.001)},
-    //     {"Delta4F", initialize_vector(-0.001, 0.001, 0.00001)}
-    // };
-
-    // /// Computes the confidence interval
-    // const vector<double> conf_interval = fit.findConfidenceInterval(xvalues.at(wilsonCoef), false);
+    /// Computes the confidence interval
+    const vector<double> conf_interval = fit.findConfidenceInterval(xvalues.at(wilsonCoef), false);
 
     /// C2JB : range [-0.1, 0.1]
     /// Delta4F: range [-0.01, 0.01]
     /// Cphi1 : range [-0.1, 0.1]
     /// CBW : range [-0.1, 0.1]
-    // benchmark_fit.emplace("best-fit", initial_guest[0]);
-    // benchmark_fit.emplace("upper-limit", conf_interval[1]);
-    // benchmark_fit.emplace("lower-limit", conf_interval[0]);
+    benchmark_fit.emplace("best-fit", initial_guest[0]);
+    benchmark_fit.emplace("upper-limit", conf_interval[1]);
+    benchmark_fit.emplace("lower-limit", conf_interval[0]);
 
-    // /// Stores the chi-square evaluated at the SM
-    // vector<double> zeros (fit_coefs.size(), 0.);
-    // double chi_sq_SM = chisq_ncdy.evaluate(zeros);
-    // benchmark_fit.emplace("ChiSq-SM-NCDY", chi_sq_SM);
-
-    // /// Chi-Square last bin
-    // ncdy_data.slice_bins(14, 1);
-    // eft_ncdy_pred.slice_bins(14, 1);
-    // double chi_sq_SM_last_bin = chisq_ncdy.evaluate(zeros);
-    // benchmark_fit.emplace("ChiSq-SM-NCDY-last-bin", chi_sq_SM_last_bin);
-
-    // /// Stores the chi-square evaluated at the SM
-    // chi_sq_SM = chisq_ccdy.evaluate(zeros);
-    // benchmark_fit.emplace("ChiSq-SM-CCDY", chi_sq_SM);
-
-    // /// Chi-Square last bin
-    // ccdy_data.slice_bins(8, 1);
-    // eft_ccdy_pred.slice_bins(8, 1);
-    // chi_sq_SM_last_bin = chisq_ccdy.evaluate(zeros);
-    // benchmark_fit.emplace("ChiSq-SM-CCDY-last-bin", chi_sq_SM_last_bin);
-    /// ------------------------------------------------------------------------------------------------------------
+    /// Stores the chi-square evaluated at the SM
+    vector<double> zeros (fit_coefs.size(), 0.);
+    double chi_sq_SM = global_chisq.evaluate(zeros);
+    benchmark_fit.emplace("ChiSq-SM", chi_sq_SM);
 
     /// ------------------------------------------------------------------------------------------------------------
     /// Saves the results of the fit in the output file
-    // save_to_json (wilsonCoef + "-" + prefix_pseudo_data, benchmark_fit);
+    save_to_json (wilsonCoef + "-" + prefix_pseudo_data, benchmark_fit);
     /// ------------------------------------------------------------------------------------------------------------
 
     return 0;

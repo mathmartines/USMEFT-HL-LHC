@@ -5,7 +5,7 @@ import json
 
 if __name__ == "__main__":
     # Path where the files are stored
-    folderpath = "/home/martines/work/PhD_Projects/USMEFT-HL-LHC/json_files/Zprime/d6sq"
+    folderpath = "/home/martines/work/PhD_Projects/USMEFT-HL-LHC/json_files/Wprime/d8"
 
     # List with all files inside the directory
     all_fit_files = [filename for filename in os.listdir(folderpath) if ".json" in filename]
@@ -28,5 +28,5 @@ if __name__ == "__main__":
             fit_results[coef_name_file].append(file_content)
 
     for coef, results in fit_results.items():
-        with open(f"{folderpath}/../Results-d6sq/{coef}.json", "w") as file_:
+        with open(f"{folderpath}/../../../FitStats/Wprime/d8/{coef}.json", "w") as file_:
             json.dump(results, file_, indent=4)
